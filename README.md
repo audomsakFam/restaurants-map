@@ -31,7 +31,7 @@
   
 ### Frameworks used
 - Frontend: React + Vite + Typescript + tailwindcss + react-leaflet
-- Backend: Express.js + Typescript + Prisma  + jest
+- Backend: Express.js + Typescript + Prisma 
 - DB: Postgresql + Redis
 - Infrastructure: Docker + Docker Compose
 
