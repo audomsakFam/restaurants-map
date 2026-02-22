@@ -13,7 +13,7 @@
    ```
 
 2. **Install dependencies and setup**
-   - Note: Please rename the .env.example file in backend directory to .env before proceeding. The npm run setup command will automatically initialize the Prisma database.
+   - Note: Please rename the `.env.example` file in backend directory to `.env` before proceeding. The `npm run setup` command will automatically initialize the Prisma database.
 
    ```bash
    npm install
@@ -28,6 +28,10 @@
 5. **Access the application**
    - Frontend: http://localhost:5173
    - Backend API: http://localhost:9000
+
+6. **Usage & Testing**
+   - **Access the App:** Open your browser and go to `http://localhost:5173`.
+   - **Test the Search Feature:** Use the search input box to find restaurants. To test the local database, try entering keywords provided in the seed file (e.g., specific restaurant names or search terms).
   
 ### Frameworks used
 - Frontend: React + Vite + Typescript + tailwindcss + react-leaflet
