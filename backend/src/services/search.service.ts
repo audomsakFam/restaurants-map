@@ -66,11 +66,27 @@ export class SearchService {
     }
 
     const validSearches = await this.db.search.findMany({
-      where: {
-        keyword: {
-          contains: normalized,
-          mode: "insensitive",
-        },
+       where: {
+        OR: [
+          {
+            keyword: {
+              contains: normalized,
+              mode: "insensitive",
+            },
+          },
+          {
+            results: {
+              some: {
+                restaurant: {
+                  name: {
+                    contains: normalized,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            },
+          },
+        ],
         expiresAt: {
           gt: new Date(),
         },
