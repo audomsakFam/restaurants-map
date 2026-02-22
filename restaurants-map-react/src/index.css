@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: rgb(32, 32, 32);
+  color: white;
+}
+
+/* Reposition Leaflet zoom control below the top-centered search bar */
+/* .leaflet-top.leaflet-left {
+  left: 50%;
+  transform: translateX(-50%);
+  right: auto;
+} */
+
+.leaflet-control-zoom {
+  margin-top: 72px;
+}
+
+@media (max-width: 780px) {
+  .leaflet-control-zoom {
+    margin-top: 88px;
+    display: none;
+  }
+}

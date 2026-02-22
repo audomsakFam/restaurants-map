@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Search {
+  id        String   @id @default(uuid())
+  keyword   String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  results SearchResult[]
+
+  @@index([keyword])
+}
+
+model Restaurant {
+  id        String   @id @default(uuid())
+  name      String
+  address   String?
+  latitude  Float?
+  longitude Float?
+  source    String
+  createdAt DateTime @default(now())
+
+  searchLinks SearchResult[]
+}
+
+model SearchResult {
+  searchId     String
+  restaurantId String
+
+  search     Search     @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@id([searchId, restaurantId])
+}
