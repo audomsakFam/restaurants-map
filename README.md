@@ -31,8 +31,8 @@
   
 ### Frameworks used
 - Frontend: React + Vite + Typescript + tailwindcss + react-leaflet
-- Backend: Express.js + Typescript + Prisma + Redis + jest
-- DB: Postgresql
+- Backend: Express.js + Typescript + Prisma  + jest
+- DB: Postgresql + Redis
 - Infrastructure: Docker + Docker Compose
 
 ### Issues and Limitations.
