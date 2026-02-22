@@ -13,16 +13,26 @@
    ```
 
 2. **Install dependencies and setup**
+   - Note: Please rename the .env.example file to .env before proceeding. The npm run setup command will automatically initialize the Prisma database.
+
    ```bash
    npm install
    npm run setup
    ```
 
-3. **Start development servers**
+4. **Start development servers**
    ```bash
    npm run dev
    ```
 
-4. **Access the application**
+5. **Access the application**
    - Frontend: http://localhost:5173
    - Backend API: http://localhost:9000
+  
+### Frameworks used
+- Frontend: React + Vite + Typescript + tailwindcss + react-leaflet
+- Backend: Express.js + Typescript + Prisma + Redis + jest
+- Infrastructure: Docker + Docker Compose
+
+### Issues and Limitations.
+- Google Places API: This project uses the Google Places API for external search. To search for restaurants outside of the provided seed data, you must add your own API key to the .env file.
