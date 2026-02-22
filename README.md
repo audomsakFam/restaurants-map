@@ -31,7 +31,7 @@
 
 6. **Usage & Testing**
    - **Access the App:** Open your browser and go to `http://localhost:5173`.
-   - **Test the Search Feature:** Use the search input box to find restaurants. To test the local database, try entering keywords provided in the seed file (e.g., specific restaurant names or search terms).
+   - **Test the Search Feature:** Use the search input box to find restaurants. You can test the local database search by using keywords and restaurant names found in the seed file located at `backend/prisma/seed.ts`.
   
 ### Frameworks used
 - Frontend: React + Vite + Typescript + tailwindcss + react-leaflet
