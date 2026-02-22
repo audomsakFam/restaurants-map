@@ -13,7 +13,7 @@
    ```
 
 2. **Install dependencies and setup**
-   - Note: Please rename the .env.example file to .env before proceeding. The npm run setup command will automatically initialize the Prisma database.
+   - Note: Please rename the .env.example file in backend directory to .env before proceeding. The npm run setup command will automatically initialize the Prisma database.
 
    ```bash
    npm install
