@@ -40,4 +40,4 @@
 - Infrastructure: Docker + Docker Compose
 
 ### Issues and Limitations.
-- Google Places API: This project uses the Google Places API for external search. To search for restaurants outside of the provided seed data, you must add your own API key to the .env file.
+- Google Places API: This project uses the Google Places API for external search. To search for restaurants outside of the provided seed data, you must add your own API key to the `.env` file.
