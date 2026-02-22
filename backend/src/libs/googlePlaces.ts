@@ -2,6 +2,12 @@ import "dotenv/config";
 
 const fetchFromGooglePlaces = async (keyword: string) => {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+  if (!apiKey) {
+    console.warn(
+      "Google Places API key is missing. Set GOOGLE_PLACES_API_KEY to enable external search.",
+    );
+    return [];
+  }
 
   const response = await fetch(
     "https://places.googleapis.com/v1/places:searchText",
@@ -20,6 +26,13 @@ const fetchFromGooglePlaces = async (keyword: string) => {
       }),
     },
   );
+
+  if (response.status === 401 || response.status === 403) {
+    console.warn(
+      "Google Places request was denied. Check API key permissions and billing.",
+    );
+    return [];
+  }
 
   const data = (await response.json()) as any;
 

@@ -59,15 +59,18 @@ export class SearchService {
     const normalized = keyword.trim().toLowerCase();
     const cacheKey = searchCacheKey(normalized);
     const cached = await safeRedis(() => redis.get(cacheKey));
-    if (cached) {
-      console.log(`validSearch hit : "${normalized}"`);
+
+    if (cached && cached !== "[]" && cached !== null) {
       console.log(`Cache  cached: "${cached}"`);
       return { source: "redis", data: JSON.parse(cached) };
     }
-    console.log(`normalized after : "${normalized}"`);
-    const validSearch = await this.db.search.findFirst({
+
+    const validSearches = await this.db.search.findMany({
       where: {
-        keyword: normalized,
+        keyword: {
+          contains: normalized,
+          mode: "insensitive",
+        },
         expiresAt: {
           gt: new Date(),
         },
@@ -78,18 +81,26 @@ export class SearchService {
         },
       },
     });
-    console.log(`validSearch  : "${validSearch}"`);
+    console.log(`validSearches  : "${validSearches.length}"`);
 
-    if (validSearch) {
-      console.log(`Database hit for keyword: "${validSearch}"`);
-      const data = validSearch.results.map((result) => ({
-        id: result.restaurant.id,
-        name: result.restaurant.name,
-        address: result.restaurant.address,
-        latitude: result.restaurant.latitude,
-        longitude: result.restaurant.longitude,
-        source: result.restaurant.source,
-      }));
+    if (validSearches.length > 0) {
+      console.log(`Database hit for keyword: "${normalized}"`);
+      const dataById = new Map(
+        validSearches.flatMap((search) =>
+          search.results.map((result) => [
+            result.restaurant.id,
+            {
+              id: result.restaurant.id,
+              name: result.restaurant.name,
+              address: result.restaurant.address,
+              latitude: result.restaurant.latitude,
+              longitude: result.restaurant.longitude,
+              source: result.restaurant.source,
+            },
+          ]),
+        ),
+      );
+      const data = Array.from(dataById.values());
 
       await safeRedis(() =>
         redis.set(cacheKey, JSON.stringify(data), {
@@ -103,8 +114,23 @@ export class SearchService {
 
       return { source: "postgres", data };
     }
+
     const externalData = await fetchFromGooglePlaces(normalized);
 
+    if (externalData.length === 0) {
+      console.log(`Cache cached: "${cached}"`);
+      console.log(
+        "Google Places API key is missing. Set GOOGLE_PLACES_API_KEY to enable external search.",
+      );
+
+      await safeRedis(() =>
+        redis.set(cacheKey, JSON.stringify(externalData), {
+          EX: SEARCH_CACHE_TTL_SECONDS,
+        }),
+      );
+      await safeRedis(() => redis.sAdd(SEARCH_KEYWORD_SET, normalized));
+      return { source: "google missing api key", data: [] };
+    }
     await this.db.$transaction(async (tx) => {
       const search = await tx.search.create({
         data: {

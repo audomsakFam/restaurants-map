@@ -289,7 +289,11 @@ async function main() {
 
   for (let i = 0; i < searches.length; i++) {
     const search = searches[i];
-    const restaurant = restaurants[i];
+    const matchedRestaurant = restaurants.find((r) =>
+      r.name.toLowerCase().includes(search.keyword.toLowerCase()),
+    );
+
+    if (!matchedRestaurant) continue;
 
     await prisma.search.upsert({
       where: { id: search.id },
@@ -302,7 +306,7 @@ async function main() {
         keyword: search.keyword,
         expiresAt,
         results: {
-          create: [{ restaurant: { connect: { id: restaurant.id } } }],
+          create: [{ restaurant: { connect: { id: matchedRestaurant.id } } }],
         },
       },
     });

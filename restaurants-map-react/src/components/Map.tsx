@@ -14,9 +14,11 @@ export default function Map() {
   const [results, setResults] = useState<RestaurantResult[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const requestRef = useRef<AbortController | null>(null);
   const isSelectingSuggestion = useRef(false);
+  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -61,6 +63,18 @@ export default function Map() {
         console.log("search results", withCoordinates);
         setResults([...withCoordinates]);
         setSuggestions([]);
+        if (arrayData.length === 0) {
+          setToast(
+            "Google Places API key missing. Please set GOOGLE_PLACES_API_KEY to enable external search.",
+          );
+          if (toastTimeoutRef.current) {
+            clearTimeout(toastTimeoutRef.current);
+          }
+          toastTimeoutRef.current = setTimeout(() => {
+            setToast(null);
+            toastTimeoutRef.current = null;
+          }, 3500);
+        }
       } catch (err) {
         if (controller.signal.aborted) return;
         console.error("Failed to search restaurants", err);
@@ -73,6 +87,14 @@ export default function Map() {
     },
     [],
   );
+
+  useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const defaultCenter: [number, number] = [13.7563, 100.5018];
   const mapCenter: [number, number] = results.length
@@ -145,6 +167,14 @@ export default function Map() {
         <div className="pointer-events-none absolute left-1/2 top-20 z-1000 -translate-x-1/2 px-3">
           <div className="pointer-events-auto rounded-md bg-red-50 px-4 py-2 text-sm text-red-700 shadow ring-1 ring-red-200">
             {error}
+          </div>
+        </div>
+      )}
+
+      {toast && (
+        <div className="pointer-events-none absolute left-1/2 top-32 z-1000 -translate-x-1/2 px-3">
+          <div className="pointer-events-auto rounded-md bg-amber-50 px-4 py-2 text-sm text-amber-800 shadow ring-1 ring-amber-200">
+            {toast}
           </div>
         </div>
       )}
